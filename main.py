@@ -1,4 +1,7 @@
-import os, sys, time, random, json
+import os, sys, time, random, json, glob
+
+# correct anwser when incorrect
+
 
 class QuizLive:
     def __init__(self, topic, questions, Questionphrase, score=0, attempt=0):
@@ -44,34 +47,70 @@ class QuizLive:
                 print(f'   {bulletPoint}. {answers}')
         # prompt answer + keep track of score
             while True:
-                answer = input("\n   Answer: ").strip().upper()  
+                answer = input(f"\n   Answer: ").strip().upper()  
                 if answer in validOptions:
                     userInput = answerList[answer.upper()]
                     # check answer
-                    if userInput.lower() == correctAnswer.lower():
-                        print('   Correct!')
+                    if userInput.lower() == str(correctAnswer).lower():
+                        print(f'   {userInput} is correct!', end=' ')
                         self.score += 1
                         self.attempt += 1
-                        time.sleep(0.4)
+                        time.sleep(0.2)
                         break
                     else:
-                        print('   Incorrect!')
+                        print(f'   Incorrect! Correct => {correctAnswer}.', end=' ')
                         self.attempt += 1
-                        time.sleep(1)
+                        time.sleep(0.2)
                         break
                 else:
                     print(f"Invalid input. Please enter one of the following: {', '.join(validOptions)}")
-                    break
+                    continue
             time.sleep(0.4)
             print(f'        score: {self.score}/{self.attempt}\n')
             time.sleep(1)
+
+
+def getTopics(directory = "jsonFiles"):
+    # Ensure the directory path is correctly formatted
+    directory = os.path.abspath(directory)
+    # Use glob to find all .json files in the directory
+    json_files = glob.glob(os.path.join(directory, '*.json'))
+    # Extract the file names from the full paths
+    json_filenames = [os.path.basename(file) for file in json_files]
+    topics = {}
+    for index, element in enumerate(json_filenames):
+        element = element.replace('.json',"")
+        topics[f'{chr(65+index)}'] = element
+    return topics
             
 
 def getQuizLive():
     answer = input('New quiz (y/n): ').lower()
+    
     if answer == 'y':
-        topic = input('Choose a topic: ')
-        questions = input('How many questions: ')
+        # prompt the user for a topic
+        print('\n Topics: ')      
+        topics = getTopics()
+        for bulletpoint, topicName in topics.items():
+                print(f'{bulletpoint} => {topicName}')
+        print('(q to quit)')
+        # check userinput for topic
+        while True:        
+            userInput = input('Choose a topic: ').upper()
+            if userInput == 'Q':
+                sys.exit()
+            elif userInput in topics.keys():
+                topic = topics[userInput]
+                break
+            else:
+                print('Not a valid choice!')
+                continue
+        # prompt user for number questions
+        try:
+            questions = int(input('How many questions: '))
+        except ValueError:
+            print('Please enter a number')
+        # create a questionPhrase  
         questionsPhrase = input('Creata a question: ')
         return(QuizLive(topic, questions, questionsPhrase))
     else:
