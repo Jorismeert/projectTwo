@@ -15,8 +15,8 @@ class QuizLive:
         time.sleep(1)
         os.system('clear')
         print(f'Start:  Quiz {self.topic.title()}.')
-        print()
         time.sleep(2)
+        print()
         # import json dictionary
         with open(f'jsonFiles/{self.topic}.json', 'r') as file:
             topicDict = json.load(file)  
@@ -82,7 +82,20 @@ def getTopics(directory = "jsonFiles"):
         element = element.replace('.json',"")
         topics[f'{chr(65+index)}'] = element
     return topics
-            
+
+def makeQuestion(topic):
+    if topic == 'capitals':
+        questionsPhrase = 'What is the capital of'
+    elif topic == 'countries':
+        questionsPhrase = 'In which continent is'
+    elif topic == 'zipcodesBelgium':
+        questionsPhrase = 'Which city has zipcode'
+    elif topic == 'citiesBelgium':
+        questionsPhrase = 'What is the zipcode of'
+    else:
+        questionsPhrase = input('Creata a question: ')
+    return questionsPhrase
+         
 
 def getQuizLive():
     answer = input('New quiz (y/n): ').lower()
@@ -110,8 +123,10 @@ def getQuizLive():
             questions = int(input('How many questions: '))
         except ValueError:
             print('Please enter a number')
+            
         # create a questionPhrase  
-        questionsPhrase = input('Creata a question: ')
+        questionsPhrase = makeQuestion(topic)
+        
         return(QuizLive(topic, questions, questionsPhrase))
     else:
         sys.exit()
@@ -123,6 +138,7 @@ def main():
 
 if __name__=="__main__":
     main()
+
 
 
 

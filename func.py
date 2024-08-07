@@ -12,6 +12,20 @@ def getTopics(directory="jsonFiles"):
         element = element.replace('.json',"")
         topics[f'{chr(65+index)}'] = element
     return topics
+
+def makeQuestion(topic):
+    if topic == 'capitals':
+        questionsPhrase = 'What is the capital of'
+    elif topic == 'countries':
+        questionsPhrase = 'In which continent is'
+    elif topic == 'zipcodesBelgium':
+        questionsPhrase = 'Which city has zipcode'
+    elif topic == 'citiesBelgium':
+        questionsPhrase = 'What is the zipcode of'
+    else:
+        questionsPhrase = input('Creata a question: ')
+    return questionsPhrase
+        
     
 
 def main():
@@ -30,7 +44,7 @@ def main():
         else:
             print('Not a valid choice!')
             continue
-        
+    print(topic)
 
 if __name__== "__main__":
     main()
