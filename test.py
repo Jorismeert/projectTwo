@@ -1,6 +1,8 @@
+#!/usr/bin/env python3
+
 import os, sys, time, random, json, glob
 
-# TODO  final score, keep track of scores in seperate file (name)?
+# TODO  keep track of highest scores?
 
 class QuizLive:
     def __init__(self, topic, questions, Questionphrase, score=0, attempt=0):
@@ -14,7 +16,7 @@ class QuizLive:
         # create Header
         time.sleep(0.8)
         os.system('clear')
-        print(f'Start:  Quiz {self.topic.title()}.')
+        print(f'Quiz {self.topic.title().upper()} - {int(self.questions)} questions.')
         time.sleep(1)
         print()
         # import json dictionary
@@ -47,7 +49,7 @@ class QuizLive:
                 print(f'   {bulletPoint}. {answers}')
         # prompt answer + keep track of score
             while True:
-                answer = input(f"\n   Answer: ").strip().upper()  
+                answer = input(f"\n   Answer:   ").strip().upper()  
                 if answer in validOptions:
                     userInput = answerList[answer.upper()]
                     # check answer
@@ -58,12 +60,12 @@ class QuizLive:
                         time.sleep(0.2)
                         break
                     else:
-                        print(f'   Incorrect! Correct => {correctAnswer}.', end=' ')
+                        print(f'   Incorrect!     Correct => {correctAnswer}.', end=' ')
                         self.attempt += 1
                         time.sleep(0.2)
                         break
                 else:
-                    print(f"Invalid input. Please enter one of the following: {', '.join(validOptions)}")
+                    print(f"   Invalid input. Please enter one of the following: {', '.join(validOptions)}")
                     continue
             time.sleep(0.4)
             print(f'        score: {self.score}/{self.attempt}\n')
@@ -106,13 +108,13 @@ def getQuizLive():
     answer = input('New quiz (y/n): ').lower()
     # when start quiz (y/n) = y
     if answer == 'y':
-        # prompt the user for a topic
+        # prompt possible topics 
         print('\n Topics: ')      
         topics = getTopics()
         for bulletpoint, topicName in topics.items():
                 print(f'{bulletpoint} => {topicName}')
         print('(q to quit)')
-        # check userinput for topic
+        # prompt user for topic input
         while True:        
             userInput = input('Choose a topic: ').upper()
             if userInput == 'Q':
@@ -127,11 +129,11 @@ def getQuizLive():
         while True:        
             questions = input('How many questions: ')
             
-            if questions.isnumeric():
+            if questions.isnumeric() and int(questions) > 0:
                 questions = float(questions)
                 break  
             else:
-                print('Not a valid choice. Enter a number!')
+                print('Not a valid choice. Enter a number (not zero)!')
                 continue
             
         # create a questionPhrase  
