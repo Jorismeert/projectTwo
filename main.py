@@ -12,10 +12,10 @@ class QuizLive:
     
     def createQuizLive(self):
         # create Header
-        time.sleep(1)
+        time.sleep(0.8)
         os.system('clear')
         print(f'Start:  Quiz {self.topic.title()}.')
-        time.sleep(2)
+        time.sleep(1)
         print()
         # import json dictionary
         with open(f'jsonFiles/{self.topic}.json', 'r') as file:
@@ -68,6 +68,9 @@ class QuizLive:
             time.sleep(0.4)
             print(f'        score: {self.score}/{self.attempt}\n')
             time.sleep(1)
+        attempsLeft = self.questions-self.attempt
+        if attempsLeft == 0:
+            print(f'        Final result: {self.score}/{self.attempt} - {round((self.score/self.attempt)*100,2)} %\n') 
 
 
 def getTopics(directory = "jsonFiles"):
@@ -121,10 +124,15 @@ def getQuizLive():
                 print('Not a valid choice!')
                 continue
         # prompt user for number questions
-        try:
-            questions = int(input('How many questions: '))
-        except ValueError:
-            print('Please enter a number')
+        while True:        
+            questions = input('How many questions: ')
+            
+            if questions.isnumeric():
+                questions = float(questions)
+                break  
+            else:
+                print('Not a valid choice. Enter a number!')
+                continue
             
         # create a questionPhrase  
         questionsPhrase = makeQuestion(topic)
@@ -141,5 +149,7 @@ def main():
 
 if __name__=="__main__":
     main()
+
+
 
 

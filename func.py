@@ -46,5 +46,21 @@ def main():
             continue
     print(topic)
 
+# prompt user for number questions
+
+    while True:        
+        questions = input('How many questions: ')
+        if questions.isnumeric():
+            questions = float(questions)
+            break  
+        else:
+            print('Not a valid choice!')
+            continue
+            
+            
+
+
+
+
 if __name__== "__main__":
     main()
