@@ -1,7 +1,6 @@
 import os, sys, time, random, json, glob
 
-# correct anwser when incorrect
-
+# TODO  final score, keep track of scores in seperate file (name)?
 
 class QuizLive:
     def __init__(self, topic, questions, Questionphrase, score=0, attempt=0):
@@ -12,6 +11,7 @@ class QuizLive:
         self.attempt = attempt
     
     def createQuizLive(self):
+        # create Header
         time.sleep(1)
         os.system('clear')
         print(f'Start:  Quiz {self.topic.title()}.')
@@ -84,6 +84,7 @@ def getTopics(directory = "jsonFiles"):
     return topics
 
 def makeQuestion(topic):
+    # link the correct question with topic
     if topic == 'capitals':
         questionsPhrase = 'What is the capital of'
     elif topic == 'countries':
@@ -98,8 +99,9 @@ def makeQuestion(topic):
          
 
 def getQuizLive():
+    # start quiz (y/n)
     answer = input('New quiz (y/n): ').lower()
-    
+    # when start quiz (y/n) = y
     if answer == 'y':
         # prompt the user for a topic
         print('\n Topics: ')      
@@ -126,8 +128,9 @@ def getQuizLive():
             
         # create a questionPhrase  
         questionsPhrase = makeQuestion(topic)
-        
+        # return arguments in class QuizLive
         return(QuizLive(topic, questions, questionsPhrase))
+    # when start quiz (y/n) = n
     else:
         sys.exit()
 
