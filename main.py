@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 
-import os, sys, time, random, json, glob
-
+import os, sys, time, random, json, glob, datetime
+from datetime import datetime
 # TODO  keep track of highest scores?
 
 class QuizLive:
@@ -14,10 +14,10 @@ class QuizLive:
     
     def createQuizLive(self):
         # create Header
-        time.sleep(0.8)
+        time.sleep(0.5)
         os.system('clear')
         print(f'Quiz {self.topic.title().upper()} - {int(self.questions)} questions.')
-        time.sleep(1)
+        time.sleep(0.5)
         print()
         # import json dictionary
         with open(f'jsonFiles/{self.topic}.json', 'r') as file:
@@ -57,12 +57,12 @@ class QuizLive:
                         print(f'   {userInput} is correct!', end=' ')
                         self.score += 1
                         self.attempt += 1
-                        time.sleep(0.2)
+                        time.sleep(0.8)
                         break
                     else:
-                        print(f'   Incorrect! Correct => {correctAnswer}.', end=' ')
+                        print(f'   Incorrect!     {questionKeys[question]} => {correctAnswer}.', end=' ')
                         self.attempt += 1
-                        time.sleep(0.2)
+                        time.sleep(0.8)
                         break
                 else:
                     print(f"   Invalid input. Please enter one of the following: {', '.join(validOptions)}")
@@ -72,9 +72,25 @@ class QuizLive:
             time.sleep(1)
         attempsLeft = self.questions-self.attempt
         if attempsLeft == 0:
-            print(f'        Final result: {self.score}/{self.attempt} - {round((self.score/self.attempt)*100,2)} %\n') 
+            print(f'        Final result: {self.score}/{self.attempt} - {round((self.score/self.attempt)*100,2)} %') 
+        # store score in json file as dictionary
+        filepath = 'score.json'
+        try:
+            with open(filepath, 'r') as file:
+                data = json.load(file)
+        except FileNotFoundError:
+            # If the file doesn't exist, start with an empty dictionary
+            data = {}
+        # Update the dictionary with the new key/value pairs
+        newData = {
+            datetime.now().strftime("%y-%m-%d %H:%M:%S"): round(((self.score/self.attempt)*100),2) }     
+        data.update(newData)
+            #  Write the updated dictionary back to the JSON file
+        with open(filepath, 'w') as file:
+            json.dump(data, file, indent=4)   
+        print(f'        Score stored in score.json.\n') 
 
-
+    
 def getTopics(directory = "jsonFiles"):
     # Ensure the directory path is correctly formatted
     directory = os.path.abspath(directory)
@@ -101,20 +117,21 @@ def makeQuestion(topic):
     else:
         questionsPhrase = input('Creata a question: ')
     return questionsPhrase
-         
+
 
 def getQuizLive():
     # start quiz (y/n)
     answer = input('New quiz (y/n): ').lower()
     # when start quiz (y/n) = y
     if answer == 'y':
+        os.system('clear')
         # prompt possible topics 
-        print('\n Topics: ')      
+        print('Topics: ')      
         topics = getTopics()
         for bulletpoint, topicName in topics.items():
                 print(f'{bulletpoint} => {topicName}')
-        print('(q to quit)')
-        # prompt user for input
+        print(' (q to quit)')
+        # prompt user for topic input
         while True:        
             userInput = input('Choose a topic: ').upper()
             if userInput == 'Q':
@@ -129,11 +146,11 @@ def getQuizLive():
         while True:        
             questions = input('How many questions: ')
             
-            if questions.isnumeric():
+            if questions.isnumeric() and int(questions) > 0:
                 questions = float(questions)
                 break  
             else:
-                print('Not a valid choice. Enter a number!')
+                print('Not a valid choice. Enter a number (not zero)!')
                 continue
             
         # create a questionPhrase  
@@ -149,7 +166,10 @@ def main():
     quiz = getQuizLive()
     quiz.createQuizLive()
 
+    
 if __name__=="__main__":
     main()
+
+
 
 
