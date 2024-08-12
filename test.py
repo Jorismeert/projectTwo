@@ -35,6 +35,7 @@ class QuizLive:
             wrongAnswer = random.sample(wrongAnswer,3)
             answerOptions = wrongAnswer + [correctAnswer]
             random.shuffle(answerOptions)
+ 
         # formulate the question
             query = f'{question+1}. {self.questionPhrase.capitalize()} {questionKeys[question]}?'
             print(query)
@@ -47,6 +48,7 @@ class QuizLive:
             for bulletPoint, answers in answerList.items():
                 validOptions.append(bulletPoint)
                 print(f'   {bulletPoint}. {answers}')
+
         # prompt answer + keep track of score
             while True:
                 answer = input(f"\n   Answer:   ").strip().upper()  
@@ -73,26 +75,25 @@ class QuizLive:
         attempsLeft = self.questions-self.attempt
         if attempsLeft == 0:
             print(f'        Final result: {self.score}/{self.attempt} - {round((self.score/self.attempt)*100,2)} %') 
+
         # store score in json file as dictionary
         filepath = 'score.json'
         try:
             with open(filepath, 'r') as file:
                 data = json.load(file)
         except FileNotFoundError:
-            # If the file doesn't exist, start with an empty dictionary
+        # If the file doesn't exist, start with an empty dictionary
             data = {}
         # Update the dictionary with the new key/value pairs
         newData = {
             datetime.now().strftime("%y-%m-%d %H:%M:%S"): round(((self.score/self.attempt)*100),2) }     
         data.update(newData)
-            #  Write the updated dictionary back to the JSON file
+        # Write the updated dictionary back to the JSON file
         with open(filepath, 'w') as file:
             json.dump(data, file, indent=4)   
         print(f'        Score stored in score.json.\n') 
 
     
-
-
 def getTopics(directory = "jsonFiles"):
     # Ensure the directory path is correctly formatted
     directory = os.path.abspath(directory)
@@ -116,12 +117,14 @@ def makeQuestion(topic):
         questionsPhrase = 'Which city has zipcode'
     elif topic == 'citiesBelgium':
         questionsPhrase = 'What is the zipcode of'
+    elif topic == 'chemicalElements':
+        questionsPhrase = 'What is the symbol of'
+    elif topic == 'famousPaintings':
+        questionsPhrase = 'Who painted'      
     else:
         questionsPhrase = input('Creata a question: ')
     return questionsPhrase
 
-
-         
 
 def getQuizLive():
     # start quiz (y/n)
@@ -129,12 +132,14 @@ def getQuizLive():
     # when start quiz (y/n) = y
     if answer == 'y':
         os.system('clear')
+
         # prompt possible topics 
         print('Topics: ')      
         topics = getTopics()
         for bulletpoint, topicName in topics.items():
                 print(f'{bulletpoint} => {topicName}')
         print(' (q to quit)')
+
         # prompt user for topic input
         while True:        
             userInput = input('Choose a topic: ').upper()
@@ -146,7 +151,8 @@ def getQuizLive():
             else:
                 print('Not a valid choice!')
                 continue
-        # prompt user for number questions
+
+       # prompt user for number questions
         while True:        
             questions = input('How many questions: ')
             
@@ -159,9 +165,11 @@ def getQuizLive():
             
         # create a questionPhrase  
         questionsPhrase = makeQuestion(topic)
+
         # return arguments in class QuizLive
         return(QuizLive(topic, questions, questionsPhrase))
-    # when start quiz (y/n) = n
+
+   # when start quiz (y/n) = n
     else:
         sys.exit()
 
@@ -173,6 +181,5 @@ def main():
     
 if __name__=="__main__":
     main()
-
 
 
